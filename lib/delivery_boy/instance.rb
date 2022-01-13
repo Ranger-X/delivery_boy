@@ -74,6 +74,9 @@ module DeliveryBoy
     end
 
     def kafka
+      client_cert = config.ssl_client_cert_file_path.nil? ? config.ssl_client_cert : File.read(config.ssl_client_cert_file_path)
+      client_key  = config.ssl_client_cert_key_file_path.nil? ? config.ssl_client_cert_key : File.read(config.ssl_client_cert_key_file_path)
+
       @kafka ||= Kafka.new(
         seed_brokers: config.brokers,
         client_id: config.client_id,
@@ -82,8 +85,8 @@ module DeliveryBoy
         socket_timeout: config.socket_timeout,
         ssl_ca_cert: config.ssl_ca_cert,
         ssl_ca_cert_file_path: config.ssl_ca_cert_file_path,
-        ssl_client_cert: config.ssl_client_cert,
-        ssl_client_cert_key: config.ssl_client_cert_key,
+        ssl_client_cert: client_cert,
+        ssl_client_cert_key: client_key,
         ssl_client_cert_key_password: config.ssl_client_cert_key_password,
         ssl_ca_certs_from_system: config.ssl_ca_certs_from_system,
         ssl_verify_hostname: config.ssl_verify_hostname,
